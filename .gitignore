@@ -28,8 +28,9 @@
 !/commit-changes.py
 !/README.md
 
-# Documentation images
-!/*.png
+# Documentation folder (for repo only, not in release)
+!/docs/
+!/docs/**
 
 # GitHub Actions
 !/.github/

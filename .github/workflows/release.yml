@@ -24,8 +24,57 @@ jobs:
           cp commit-changes-windows.bat release/
           cp commit-changes-linux-mac.sh release/
           cp commit-changes.py release/
-          cp README.md release/
-          cp *.png release/
+          
+          # Create simplified README for end users
+          cat > release/README.md << 'EOF'
+          # Ignition Git Version Control
+          
+          **Simple version control for your Ignition projects**
+          
+          ## Quick Setup
+          
+          1. **Copy these files** to your Ignition root folder:
+             - `.gitignore`
+             - One script file (`.bat` for Windows, `.sh` for Linux/Mac, or `.py` for Python)
+          
+          2. **Open terminal** in Ignition folder and run:
+             ```bash
+             git init
+             git config user.name "Your Name"
+             git config user.email "your.email@example.com"
+             git add .
+             git commit -m "Initial Ignition setup"
+             ```
+          
+          3. **Test it:**
+             - Windows: `commit-changes-windows.bat "Test"`
+             - Linux/Mac: `chmod +x commit-changes-linux-mac.sh && ./commit-changes-linux-mac.sh "Test"`
+             - Python: `python commit-changes.py "Test"`
+          
+          ## Auto-Save from Ignition
+          
+          Gateway → Config → System → Events → Add Project Published Event:
+          
+          ```python
+          import system
+          projectName = projectPublishedEvent.getProjectName()
+          userName = projectPublishedEvent.getActorName()
+          message = "Published: %s (by %s)" % (projectName, userName)
+          system.util.execute(["commit-changes-windows.bat", message])  # Change to your script
+          ```
+          
+          ## What Gets Tracked
+          
+          ✅ Projects, Gateway config, Settings  
+          ❌ Databases, Backups, Logs, Certificates
+          
+          ## Need Help?
+          
+          - Check log: `data/git-commits.log`
+          - View history: `git log --oneline`
+          - Full documentation: https://github.com/TahriTech/Ignition-3-Step-Git
+          EOF
+          
           cd release
           zip -r ../ignition-git-${{ steps.get_version.outputs.VERSION }}.zip .
       
@@ -41,15 +90,15 @@ jobs:
             - `commit-changes-windows.bat` - Windows version
             - `commit-changes-linux-mac.sh` - Linux/Mac version  
             - `commit-changes.py` - Python cross-platform version
-            - `README.md` - Complete setup guide
-            - Documentation images
+            - `README.md` - Quick setup guide
             
             ### Quick Start:
             1. Download and extract the ZIP file
-            2. Copy files to your Ignition root folder
-            3. Run `git init` and initial setup commands
+            2. Copy `.gitignore` and one script to your Ignition root folder
+            3. Run `git init` and setup commands (see README.md)
             4. Test with your chosen script
             
-            See README.md for detailed instructions.
+            ### Full Documentation:
+            See the [repository README](https://github.com/TahriTech/Ignition-3-Step-Git) for detailed instructions, troubleshooting, and integration examples.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
