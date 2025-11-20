@@ -1,6 +1,7 @@
 #!/bin/bash
 ###############################################################################
 # IGNITION GIT SAVE SCRIPT - Linux/Mac Version
+# Version 1.0.0 | Last Updated: November 20, 2025
 ###############################################################################
 #
 # WHAT THIS SCRIPT DOES (in plain English):

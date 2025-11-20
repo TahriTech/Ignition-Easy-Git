@@ -1,0 +1,55 @@
+name: Create Release Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v1.2.3, etc.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Create release package
+        run: |
+          mkdir -p release
+          cp .gitignore release/
+          cp commit-changes-windows.bat release/
+          cp commit-changes-linux-mac.sh release/
+          cp commit-changes.py release/
+          cp README.md release/
+          cp *.png release/
+          cd release
+          zip -r ../ignition-git-${{ steps.get_version.outputs.VERSION }}.zip .
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ignition-git-${{ steps.get_version.outputs.VERSION }}.zip
+          body: |
+            ## Ignition 3-Step Git Version Control ${{ steps.get_version.outputs.VERSION }}
+            
+            ### What's Included:
+            - `.gitignore` - Tells Git what to track and ignore
+            - `commit-changes-windows.bat` - Windows version
+            - `commit-changes-linux-mac.sh` - Linux/Mac version  
+            - `commit-changes.py` - Python cross-platform version
+            - `README.md` - Complete setup guide
+            - Documentation images
+            
+            ### Quick Start:
+            1. Download and extract the ZIP file
+            2. Copy files to your Ignition root folder
+            3. Run `git init` and initial setup commands
+            4. Test with your chosen script
+            
+            See README.md for detailed instructions.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

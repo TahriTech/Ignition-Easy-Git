@@ -1,12 +1,14 @@
 # Ignition Setup Guide - Git Version Control for Ignition
 
+**Version 1.0.0** | Last Updated: November 20, 2025
+
 > **📝 Note:** This README is designed to be customizable! Feel free to modify it to match your organization's specific setup, add your own examples, or include additional instructions relevant to your team.
 
 **Simple drag-and-drop Git version control for Ignition 8.3**
 
 ## 🎯 It's This Simple: Drag & Drop 3 Files
 
-![Drag and drop files to Ignition folder](Ignition-3-Step-Git_CopyPaste.png)
+![Drag and drop files to Ignition folder](./Ignition-3-Step-Git_CopyPaste.png)
 
 **That's it!** Copy 3 files to your Ignition folder, run 4 commands, and you're done!
 
@@ -14,7 +16,7 @@
 
 ## 📁 What Gets Tracked vs. Ignored
 
-![What Git tracks and ignores](Ignition-3-Step-Git-Ignored-2.png)
+![What Git tracks and ignores](./Ignition-3-Step-Git-Ignored-2.png)
 
 ✅ **Tracked:** Projects, Gateway config, Settings  
 ❌ **Ignored:** Databases, Backups, Logs, Certificates

@@ -25,7 +25,15 @@
 !/.gitignore
 !/commit-changes-windows.bat
 !/commit-changes-linux-mac.sh
+!/commit-changes.py
 !/README.md
+
+# Documentation images
+!/*.png
+
+# GitHub Actions
+!/.github/
+!/.github/**
 
 # ===== WHAT WE DON'T SAVE (Auto-Generated or Sensitive) =====
 

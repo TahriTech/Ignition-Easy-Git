@@ -1,6 +1,7 @@
 @echo off
 REM =============================================================================
 REM IGNITION GIT SAVE SCRIPT - Windows Version
+REM Version 1.0.0 | Last Updated: November 20, 2025
 REM =============================================================================
 REM 
 REM WHAT THIS SCRIPT DOES (in plain English):
