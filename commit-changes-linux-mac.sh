@@ -1,83 +1,112 @@
 #!/bin/bash
 ###############################################################################
-# commit-changes-linux-mac.sh - Save Ignition changes to Git (LINUX/MAC ONLY)
+# IGNITION GIT SAVE SCRIPT - Linux/Mac Version
 ###############################################################################
 #
-# What this does:
-#   1. Saves changes in the data/ folder to Git
-#   2. Logs everything to data/git-commits.log
-#   3. Returns 0 if successful, 1 if failed
+# WHAT THIS SCRIPT DOES (in plain English):
+#   Step 1: Looks at what changed in your Ignition data folder
+#   Step 2: Saves those changes to Git with your message
+#   Step 3: Writes a note in a log file so you can see what happened
 #
-# Place this file in the ROOT of your Ignition installation folder
-# Example: /usr/local/bin/ignition/commit-changes-linux-mac.sh
+# WHERE TO PUT THIS FILE:
+#   Put it in your main Ignition folder (where you see the "data" folder)
+#   Example: /usr/local/bin/ignition/
 #
-# Usage from command line:
-#   ./commit-changes-linux-mac.sh "Your message here"
+# HOW TO USE IT:
+#   First time only - make it executable:
+#     chmod +x commit-changes-linux-mac.sh
 #
-# Usage from Ignition Gateway Script:
-#   system.util.execute(["./commit-changes-linux-mac.sh", "Your message"])
+#   From Terminal:
+#     ./commit-changes-linux-mac.sh "What I changed"
+#
+#   From Ignition (copy this into a script):
+#     system.util.execute(["./commit-changes-linux-mac.sh", "What I changed"])
 #
 ###############################################################################
 
-# Go to the folder where this script is located (Ignition root)
+# Move to the Ignition folder (where this script lives)
 cd "$(dirname "$0")" || exit 1
 
-# Get the message (or create one with timestamp if not provided)
+# ====================
+# STEP 1: Get your message
+# ====================
+# If you didn't provide a message, we'll create one with today's date and time
 if [ -z "$1" ]; then
     MESSAGE="Auto save $(date '+%Y-%m-%d %H:%M:%S')"
 else
     MESSAGE="$1"
 fi
 
-# Create log file if needed
+# ====================
+# STEP 2: Set up the log file
+# ====================
+# This creates a log file in your data folder to track what happens
 LOG="data/git-commits.log"
 if [ ! -f "$LOG" ]; then
-    echo "Git Commit Log" > "$LOG"
-    echo "==============" >> "$LOG"
+    echo "Ignition Git Save Log" > "$LOG"
+    echo "=====================" >> "$LOG"
 fi
 
-# Function to log messages
+# Helper function to write to the log file
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG"
 }
 
+# Write what we're about to save
 log "Saving: $MESSAGE"
 
-# Check if Git is installed
+# ====================
+# STEP 3: Check if Git is installed
+# ====================
 if ! command -v git &> /dev/null; then
-    log "ERROR: Git not found. Install Git first."
-    echo "ERROR: Git not found. Install Git first."
+    log "ERROR: Git is not installed. Please install Git first."
+    echo "ERROR: Git is not installed. Please install Git first."
+    echo "Install with: sudo apt-get install git (Ubuntu) or brew install git (Mac)"
     exit 1
 fi
 
-# Check if Git is set up
+# ====================
+# STEP 4: Check if Git is set up in this folder
+# ====================
 if [ ! -d ".git" ]; then
-    log "ERROR: Not a Git repo. Run 'git init' first."
-    echo "ERROR: Not a Git repo. Run 'git init' first."
+    log "ERROR: Git is not set up yet. Run these commands first:"
+    echo "ERROR: Git is not set up yet. Run these commands first:"
+    echo "  git init"
+    echo "  git add ."
+    echo "  git commit -m 'Initial setup'"
     exit 1
 fi
 
-# Add all changes in data/ folder (relative path)
+# ====================
+# STEP 5: Tell Git to look at the data folder
+# ====================
 git add data/ >> "$LOG" 2>&1
 
-# Check if anything actually changed
+# ====================
+# STEP 6: Check if anything actually changed
+# ====================
 if git diff --cached --quiet; then
-    log "INFO: Nothing changed, nothing to save"
-    echo "INFO: Nothing changed, nothing to save"
+    log "Nothing has changed - nothing to save"
+    echo "Nothing has changed - nothing to save"
     exit 0
 fi
 
-# Save the changes
+# ====================
+# STEP 7: Save the changes to Git
+# ====================
 if git commit -m "$MESSAGE" >> "$LOG" 2>&1; then
-    log "SUCCESS: Changes saved to Git"
-    echo "SUCCESS: Changes saved to Git"
+    log "SUCCESS: Changes saved to Git!"
+    echo "SUCCESS: Changes saved to Git!"
 else
-    log "ERROR: Save failed"
-    echo "ERROR: Save failed"
+    log "ERROR: Failed to save changes"
+    echo "ERROR: Failed to save changes"
     exit 1
 fi
 
-# Optional: Uncomment these lines to auto-push to GitHub/GitLab
+# ====================
+# OPTIONAL: Push to GitHub/GitLab
+# ====================
+# If you want to automatically upload to GitHub/GitLab, remove the "#" below:
 # git push >> "$LOG" 2>&1
 
 exit 0
